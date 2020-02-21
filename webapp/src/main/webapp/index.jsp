@@ -1,2 +1,2 @@
 <h1> Hello,  proj1demo1!!   </h1>
-<h2> this is to check the auto build  to create a con in dockerhost </h2>
+<h2> this is to check the auto build  to deletion/ create a con in dockerhost </h2>
