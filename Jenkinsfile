@@ -15,4 +15,8 @@ node {
        sh "${mvnHome}/bin/mvn sonar:sonar"
         }
     }
+   
+   stage('Email Notification'){
+     mail bcc: '', body: 'test', cc: '', from: '', replyTo: '', subject: 'test from jenkins', to: 'vilvesh2008@gmail.com'
+   }
 }
