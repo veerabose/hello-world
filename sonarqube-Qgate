@@ -27,7 +27,7 @@ node {
       
          stage('copy the war file '){
             sshagent(['jenk1']) {
-         sh 'scp -o StrictHostKeyChecking=no target/*.war jenkins@13.92.0.76:/opt/tomcat8/webapps/'
+         sh 'scp -o StrictHostKeyChecking=no target/*.war jenkins@13.92.0.76:/opt/tomcat8'
 
       }
    }
