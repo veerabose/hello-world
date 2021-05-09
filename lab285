@@ -381,3 +381,14 @@ Completing the Guided Exercise: Creating a MySQL database instance
  · Removing "rhscl/mysql-57-rhel7:5.7-3.14" image..............  SUCCESS
 [student@workstation DO180-apps]$ 
 
+Summary
+In this chapter, you learned:
+ Podman allows users to search for and download images from local or remote registries.
+  The podman run command creates and starts a container from a container image.
+   Containers are executed in the background by using the -d flag, or interactively by using the -
+   it flag.
+    Some container images require environment variables that are set using the -e option from the
+    podman run command.
+     Red Hat Container Catalog assists in searching, exploring, and analyzing container images from
+     Red Hat's official container image repository.
+     
