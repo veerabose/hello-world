@@ -99,3 +99,285 @@ Writing manifest to image destination
 Storing signatures
 Hello!
 [student@workstation DO180-apps]$ 
+
+[student@workstation DO180-apps]$ 
+[student@workstation DO180-apps]$ sudo podman run -d rhscl/httpd-24-rhel7:2.4-36.8
+Trying to pull registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8...
+Getting image source signatures
+Copying blob 258c04e7cfdc done
+Copying blob e373541ccf6a done
+Copying blob 202f3871a68d done
+Copying blob c5d2e9481169 done
+Writing manifest to image destination
+Storing signatures
+d340ed7af02c7edd97fe32b025d173b8d265179914d0f41e28fd41a5469e08de
+[student@workstation DO180-apps]$ sudo podman inspect -l -f "{{.NetworkSettings.IPAddress}}"
+10.88.0.3
+[student@workstation DO180-apps]$ curl http://10.88.0.3:8080
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>Test Page for the Apache HTTP Server on Red Hat Enterprise Linux</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style type="text/css">
+			/*<![CDATA[*/
+			body {
+				background-color: #fff;
+				color: #000;
+				font-size: 0.9em;
+				font-family: sans-serif,helvetica;
+				margin: 0;
+				padding: 0;
+			}
+			:link {
+				color: #c00;
+			}
+			:visited {
+				color: #c00;
+			}
+			a:hover {
+				color: #f50;
+			}
+			h1 {
+				text-align: center;
+				margin: 0;
+				padding: 0.6em 2em 0.4em;
+				background-color: #900;
+				color: #fff;
+				font-weight: normal;
+				font-size: 1.75em;
+				border-bottom: 2px solid #000;
+			}
+			h1 strong {
+				font-weight: bold;
+			}
+			h2 {
+				font-size: 1.1em;
+				font-weight: bold;
+			}
+			hr {
+				display: none;
+			}
+			.content {
+				padding: 1em 5em;
+			}
+			.content-columns {
+				/* Setting relative positioning allows for 
+				absolute positioning for sub-classes */
+				position: relative;
+				padding-top: 1em;
+			}
+			.content-column-left {
+				/* Value for IE/Win; will be overwritten for other browsers */
+				width: 47%;
+				padding-right: 3%;
+				float: left;
+				padding-bottom: 2em;
+			}
+			.content-column-left hr {
+				display: none;
+			}
+			.content-column-right {
+				/* Values for IE/Win; will be overwritten for other browsers */
+				width: 47%;
+				padding-left: 3%;
+				float: left;
+				padding-bottom: 2em;
+			}
+			.content-columns>.content-column-left, .content-columns>.content-column-right {
+				/* Non-IE/Win */
+			}
+			img {
+				border: 2px solid #fff;
+				padding: 2px;
+				margin: 2px;
+			}
+			a:hover img {
+				border: 2px solid #f50;
+			}
+			/*]]>*/
+		</style>
+	</head>
+
+	<body>
+		<h1>Red Hat Enterprise Linux <strong>Test Page</strong></h1>
+
+		<div class="content">
+			<div class="content-middle">
+				<p>This page is used to test the proper operation of the Apache HTTP server after it has been installed. If you can read this page, it means that the Apache HTTP server installed at this site is working properly.</p>
+			</div>
+			<hr />
+
+			<div class="content-columns">
+				<div class="content-column-left">
+					<h2>If you are a member of the general public:</h2>
+
+					<p>The fact that you are seeing this page indicates that the website you just visited is either experiencing problems, or is undergoing routine maintenance.</p>
+
+					<p>If you would like to let the administrators of this website know that you've seen this page instead of the page you expected, you should send them e-mail. In general, mail sent to the name "webmaster" and directed to the website's domain should reach the appropriate person.</p>
+
+					<p>For example, if you experienced problems while visiting www.example.com, you should send e-mail to "webmaster@example.com".</p>
+
+					<p>For information on Red Hat Enterprise Linux, please visit the <a href="http://www.redhat.com/">Red Hat, Inc. website</a>. The documentation for Red Hat Enterprise Linux is <a href="http://www.redhat.com/docs/manuals/enterprise/">available on the Red Hat, Inc. website</a>.</p>
+					<hr />
+				</div>
+
+				<div class="content-column-right">
+					<h2>If you are the website administrator:</h2>
+
+					<p>You may now add content to the directory <tt>/var/www/html/</tt>. Note that until you do so, people visiting your website will see this page, and not your content. To prevent this page from ever being used, follow the instructions in the file <tt>/etc/httpd/conf.d/welcome.conf</tt>.</p>
+
+                                        <p>You are free to use the image below on web sites powered by the Apache HTTP Server:</p>
+					
+                                        <p align="center"><a href="http://httpd.apache.org/"><img src="/icons/apache_pb2.gif" alt="[ Powered by Apache ]"/></a></p>
+
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+[student@workstation DO180-apps]$ sudo podman run -it ubi7/ubi:7.7 /bin/bash
+[root@fa2e42793df3 /]# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@fa2e42793df3 /]# whoami
+root
+[root@fa2e42793df3 /]# exit
+exit
+[student@workstation DO180-apps]$ sudo podman ps
+CONTAINER ID  IMAGE                                                     COMMAND               CREATED        STATUS            PORTS  NAMES
+d340ed7af02c  registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8  /usr/bin/run-http...  4 minutes ago  Up 4 minutes ago         inspiring_hellman
+[student@workstation DO180-apps]$ sudo podman ps-o wide
+Error: unrecognized command `podman ps-o`
+Try 'podman --help' for more information.
+[student@workstation DO180-apps]$ sudo podman ps -o wide
+Error: unknown shorthand flag: 'o' in -o
+[student@workstation DO180-apps]$ sudo podman ps -a
+CONTAINER ID  IMAGE                                                     COMMAND               CREATED         STATUS                     PORTS  NAMES
+fa2e42793df3  registry.access.redhat.com/ubi7/ubi:7.7                   /bin/bash             57 seconds ago  Exited (0) 37 seconds ago         jolly_pare
+d340ed7af02c  registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8  /usr/bin/run-http...  4 minutes ago   Up 4 minutes ago                  inspiring_hellman
+a36af9165c44  registry.access.redhat.com/ubi7/ubi:7.7                   echo Hello!           13 minutes ago  Exited (0) 13 minutes ago         epic_hellman
+[student@workstation DO180-apps]$ 
+[student@workstation DO180-apps]$ sudo podman run -e GREET=Hello -e NAME=RedHat rhel7:7.5 printenv GREET NAME
+Trying to pull registry.access.redhat.com/rhel7:7.5...
+Getting image source signatures
+Copying blob 8d846904080d done
+Copying blob 92058cf44053 done
+Copying config 7b875638cf done
+Writing manifest to image destination
+Storing signatures
+Hello
+RedHat
+[student@workstation DO180-apps]$ sudo podman run --name mysql-custom -e MYSQL_USER=redhat -e MYSQL_PASSWORD=r3dh4t -d rhmap47/mysql:5.5
+Trying to pull registry.access.redhat.com/rhmap47/mysql:5.5...
+Getting image source signatures
+Copying blob 224952f96c46 done
+Copying blob 8d6c031250a5 done
+Copying blob e07a0d1428be done
+Copying config 25e56fe831 done
+Writing manifest to image destination
+Storing signatures
+4e6d3a3eaf6abc98ccb1c71c05a8bc9bf75381146d209231a532632e92cabd4e
+[student@workstation DO180-apps]$ sudo podman ps
+CONTAINER ID  IMAGE                                                     COMMAND               CREATED        STATUS            PORTS  NAMES
+d340ed7af02c  registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8  /usr/bin/run-http...  9 minutes ago  Up 9 minutes ago         inspiring_hellman
+[student@workstation DO180-apps]$ sudo podman ps -a
+CONTAINER ID  IMAGE                                                     COMMAND               CREATED         STATUS                     PORTS  NAMES
+4e6d3a3eaf6a  registry.access.redhat.com/rhmap47/mysql:5.5              run-mysqld            2 minutes ago   Exited (1) 2 minutes ago          mysql-custom
+36a9a7416244  registry.access.redhat.com/rhel7:7.5                      printenv GREET NA...  3 minutes ago   Exited (0) 3 minutes ago          beautiful_wiles
+fa2e42793df3  registry.access.redhat.com/ubi7/ubi:7.7                   /bin/bash             8 minutes ago   Exited (0) 7 minutes ago          jolly_pare
+d340ed7af02c  registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8  /usr/bin/run-http...  11 minutes ago  Up 11 minutes ago                 inspiring_hellman
+a36af9165c44  registry.access.redhat.com/ubi7/ubi:7.7                   echo Hello!           20 minutes ago  Exited (0) 20 minutes ago         epic_hellman
+[student@workstation DO180-apps]$ 
+
+Note
+Many Podman flags also have an alternative long form; some of these are explained
+below.
+ -t is equivalent to --tty, meaning a pseudo-tty (pseudo-terminal) is to be
+ allocated for the container.
+  -i is the same as --interactive. When used, standard input is kept open into
+  the container.
+   -d, or its long form --detach, means the container runs in the background
+   (detached). Podman then prints the container id.
+   See the Podman documentation for the complete list of flags.
+   
+   [student@workstation DO180-apps]$ lab container-create start
+
+Setting up workstation for the Guided Exercise: Creating a MySQL database instance
+
+ · Checking podman configuration...............................  SUCCESS
+ · Creating create_table.txt file..............................  SUCCESS
+[student@workstation DO180-apps]$ sudo podman run --name mysql-basic -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 -d rhscl/mysql-57-rhel7:5.7-3.14
+Trying to pull registry.access.redhat.com/rhscl/mysql-57-rhel7:5.7-3.14...
+Getting image source signatures
+Copying blob c5d2e9481169 skipped: already exists
+Copying blob e373541ccf6a skipped: already exists
+Copying blob b3949aed10eb done
+Writing manifest to image destination
+Storing signatures
+e748b13b4cb5c1502215de470490903521076ee324077825d99adbf3a866c6e6
+[student@workstation DO180-apps]$ sudo podman ps --format "{{.ID}} {{.Image}} {{.Names}}"
+e748b13b4cb5 registry.access.redhat.com/rhscl/mysql-57-rhel7:5.7-3.14 mysql-basic
+d340ed7af02c registry.access.redhat.com/rhscl/httpd-24-rhel7:2.4-36.8 inspiring_hellman
+[student@workstation DO180-apps]$ sudo podman exec -it mysql-basic /bin/bash
+bash-4.2$ mysql -uroot
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.7.16 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| items              |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use items;
+Database changed
+mysql> CREATE TABLE Projects (id int(11) NOT NULL, name varchar(255) DEFAULT NULL, code varchar(255) DEFAULT NULL, PRIMARY KEY (id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_items |
++-----------------+
+| Projects        |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> insert into Projects (id, name, code) values (1,'DevOps','DO180');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Projects;
++----+--------+-------+
+| id | name   | code  |
++----+--------+-------+
+|  1 | DevOps | DO180 |
++----+--------+-------+
+1 row in set (0.00 sec)
+
+mysql> exit
+Bye
+bash-4.2$ exit
+exit
+[student@workstation DO180-apps]$ lab container-create finish
+
+Completing the Guided Exercise: Creating a MySQL database instance
+
+ · Removing "mysql-basic" container............................  SUCCESS
+ · Removing "rhscl/mysql-57-rhel7:5.7-3.14" image..............  SUCCESS
+[student@workstation DO180-apps]$ 
+
