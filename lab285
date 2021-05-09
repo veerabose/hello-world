@@ -392,3 +392,116 @@ In this chapter, you learned:
      Red Hat Container Catalog assists in searching, exploring, and analyzing container images from
      Red Hat's official container image repository.
      
+     
+ --------------------------------------CH-3-GE-----------------------------------------------------------------------------------
+ [student@workstation ~]$ lab manage-lifecycle start
+
+Setting up workstation for the Guided Excercise: Managing a MySQL Container
+
+ · Checking podman configuration...............................  SUCCESS
+ · Setting up labs folder......................................  SUCCESS
+ · Downloading starter project.................................  SUCCESS
+ · Downloading solution project................................  SUCCESS
+
+Setup successful. Please proceed with the exercise.
+
+[student@workstation ~]$ sudo podman run --name mysql-db rhscl/mysql-57-rhel7
+Trying to pull registry.access.redhat.com/rhscl/mysql-57-rhel7...
+Getting image source signatures
+Copying blob f1e961fe4c51 done
+Copying blob 1c9f515fc6ab done
+Copying blob 9f1840c3b3bd done
+Copying blob 1d2c4ce43b78 done
+Copying config 60726b33a0 done
+Writing manifest to image destination
+Storing signatures
+=> sourcing 20-validate-variables.sh ...
+You must either specify the following environment variables:
+  MYSQL_USER (regex: '^[a-zA-Z0-9_]+$')
+  MYSQL_PASSWORD (regex: '^[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]+$')
+  MYSQL_DATABASE (regex: '^[a-zA-Z0-9_]+$')
+Or the following environment variable:
+  MYSQL_ROOT_PASSWORD (regex: '^[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]+$')
+Or both.
+Optional Settings:
+  MYSQL_LOWER_CASE_TABLE_NAMES (default: 0)
+  MYSQL_LOG_QUERIES_ENABLED (default: 0)
+  MYSQL_MAX_CONNECTIONS (default: 151)
+  MYSQL_FT_MIN_WORD_LEN (default: 4)
+  MYSQL_FT_MAX_WORD_LEN (default: 20)
+  MYSQL_AIO (default: 1)
+  MYSQL_KEY_BUFFER_SIZE (default: 32M or 10% of available memory)
+  MYSQL_MAX_ALLOWED_PACKET (default: 200M)
+  MYSQL_TABLE_OPEN_CACHE (default: 400)
+  MYSQL_SORT_BUFFER_SIZE (default: 256K)
+  MYSQL_READ_BUFFER_SIZE (default: 8M or 5% of available memory)
+  MYSQL_INNODB_BUFFER_POOL_SIZE (default: 32M or 50% of available memory)
+  MYSQL_INNODB_LOG_FILE_SIZE (default: 8M or 15% of available memory)
+  MYSQL_INNODB_LOG_BUFFER_SIZE (default: 8M or 15% of available memory)
+
+For more information, see https://github.com/sclorg/mysql-container
+[student@workstation ~]$ sudo podman logs mysql-db
+=> sourcing 20-validate-variables.sh ...
+You must either specify the following environment variables:
+  MYSQL_USER (regex: '^[a-zA-Z0-9_]+$')
+  MYSQL_PASSWORD (regex: '^[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]+$')
+  MYSQL_DATABASE (regex: '^[a-zA-Z0-9_]+$')
+Or the following environment variable:
+  MYSQL_ROOT_PASSWORD (regex: '^[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]+$')
+Or both.
+Optional Settings:
+  MYSQL_LOWER_CASE_TABLE_NAMES (default: 0)
+  MYSQL_LOG_QUERIES_ENABLED (default: 0)
+  MYSQL_MAX_CONNECTIONS (default: 151)
+  MYSQL_FT_MIN_WORD_LEN (default: 4)
+  MYSQL_FT_MAX_WORD_LEN (default: 20)
+  MYSQL_AIO (default: 1)
+  MYSQL_KEY_BUFFER_SIZE (default: 32M or 10% of available memory)
+  MYSQL_MAX_ALLOWED_PACKET (default: 200M)
+  MYSQL_TABLE_OPEN_CACHE (default: 400)
+  MYSQL_SORT_BUFFER_SIZE (default: 256K)
+  MYSQL_READ_BUFFER_SIZE (default: 8M or 5% of available memory)
+  MYSQL_INNODB_BUFFER_POOL_SIZE (default: 32M or 50% of available memory)
+  MYSQL_INNODB_LOG_FILE_SIZE (default: 8M or 15% of available memory)
+  MYSQL_INNODB_LOG_BUFFER_SIZE (default: 8M or 15% of available memory)
+
+For more information, see https://github.com/sclorg/mysql-container
+[student@workstation ~]$ sudo podman run --name mysql -d -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 rhscl/mysql-57-rhel7
+db74e4055f6e83b2b47b42f8a94f37909d523852b58ab3e2a94d9b2589ef53d6
+[student@workstation ~]$ sudo podman ps
+CONTAINER ID  IMAGE                                                   COMMAND     CREATED         STATUS             PORTS  NAMES
+db74e4055f6e  registry.access.redhat.com/rhscl/mysql-57-rhel7:latest  run-mysqld  15 seconds ago  Up 15 seconds ago         mysql
+[student@workstation ~]$ sudo podman inspect -f '{{ .NetworkSettings.IPAddress }}' mysql
+10.88.0.9
+[student@workstation ~]$ mysql -uuser1 -h 10.88.0.9 -pmypa55 items < /home/student/DO180/labs/manage-lifecycle/db.sql
+[student@workstation ~]$ sudo podman run --name mysql-2 -it rhscl/mysql-57-rhel7 /bin/bash
+bash-4.2$ mysql -uroot
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+bash-4.2$ exit
+exit
+[student@workstation ~]$ sudo podman ps -a --format="{{.ID}} {{.Names}} {{.Status}}"
+4ad5fbde5823 mysql-2 Exited (1) 35 seconds ago
+db74e4055f6e mysql Up 3 minutes ago
+64cb439fce2b mysql-db Exited (1) 4 minutes ago
+4e6d3a3eaf6a mysql-custom Exited (1) About an hour ago
+36a9a7416244 beautiful_wiles Exited (0) About an hour ago
+fa2e42793df3 jolly_pare Exited (0) About an hour ago
+d340ed7af02c inspiring_hellman Exited (0) About an hour ago
+a36af9165c44 epic_hellman Exited (0) 2 hours ago
+[student@workstation ~]$ sudo podman exec mysql /bin/bash -c 'mysql -uuser1 -pmypa55 -e "select * from items.Projects;"'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+id	name	code
+1	DevOps	DO180
+[student@workstation ~]$ lab manage-lifecycle finish
+
+Completing the Guided Excercise: Managing a MySQL Container
+
+ · Stopping 'mysql' container..................................  SUCCESS
+ · Stopping 'mysql-2' container................................  SUCCESS
+ · Removing 'mysql' container..................................  SUCCESS
+ · Removing 'mysql-2' container................................  SUCCESS
+ · Removing 'mysql-db' container...............................  SUCCESS
+ · Removing 'rhscl/mysql-57-rhel7' image.......................  SUCCESS
+[student@workstation ~]$ 
+
+ 
