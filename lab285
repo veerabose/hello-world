@@ -1,0 +1,101 @@
+1
+[student@workstation ~]$ lab-configure 
+
+ . Enter the GitHub account name: veerabose
+   Verifying GitHub account name: veerabose
+
+ . Enter the Quay.io account name: veeraabose
+   Verifying Quay.io account name: veeraabose
+
+ . Configuring RHT_OCP4_GITHUB_USER variable: SUCCESS
+ . Configuring RHT_OCP4_QUAY_USER variable:   SUCCESS
+
+ . To reconfigure, run: lab-configure -d
+
+ . Ensuring user 'developer' can log in to the OpenShift cluster.
+Warning: Permanently added 'utility,172.25.250.253' (ECDSA) to the list of known hosts.
+ . HTPasswd Identify Provider configured
+ . NOTE: It might take up to one minute before user 'developer'
+         can successfully log in to the OpenShift cluster.
+
+[student@workstation ~]$ source /usr/local/etc/ocp4.config
+
+[student@workstation ~]$ source /usr/local/etc/ocp4.config
+[student@workstation ~]$ git clone https://github.com/${RHT_OCP4_GITHUB_USER}/DO180-apps
+Cloning into 'DO180-apps'...
+remote: Enumerating objects: 172, done.
+remote: Total 172 (delta 0), reused 0 (delta 0), pack-reused 172
+Receiving objects: 100% (172/172), 286.98 KiB | 448.00 KiB/s, done.
+Resolving deltas: 100% (72/72), done.
+[student@workstation ~]$ cd D
+Desktop/    DO180-apps/ Documents/  Downloads/  
+[student@workstation ~]$ cd DO180-apps/
+[student@workstation DO180-apps]$ ls
+example  nodejs-app  nodejs-helloworld  php-helloworld  README.md  temps  todoapp
+[student@workstation DO180-apps]$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+[student@workstation DO180-apps]$ head README.md 
+# DO180-apps
+DO180 Repository for Sample Applications
+[student@workstation DO180-apps]$ sudo podman search rhel| less
+[student@workstation DO180-apps]$ sudo podman search rhel| more
+INDEX        NAME                                                                     DESCRIPTION                               
+        STARS   OFFICIAL   AUTOMATED
+redhat.com   registry.access.redhat.com/rhel7-atomic                                  Red Hat Enterprise Linux Atomic Image is a
+ m...   0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnet-20-rhel7                        .NET Core 2.0 for RHEL                    
+        0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnetcore-10-rhel7                    .NET Core 1.0 for RHEL                    
+        0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnetcore-11-rhel7                    .NET Core 1.1 for RHEL                    
+        0                  
+redhat.com   registry.access.redhat.com/rhel7/rhel-atomic                             Red Hat Enterprise Linux Atomic Image is a
+ m...   0                  
+redhat.com   registry.access.redhat.com/rhel-atomic                                   Red Hat Enterprise Linux Atomic Image is a
+ m...   0                  
+redhat.com   registry.access.redhat.com/rhel-minimal                                  Red Hat Enterprise Linux Minimal Image is 
+a ...   0                  
+redhat.com   registry.access.redhat.com/rhel7-rhel-minimal                            Red Hat Enterprise Linux Minimal Image is 
+a ...   0                  
+redhat.com   registry.access.redhat.com/rhel7-minimal                                 Red Hat Enterprise Linux Minimal Image is 
+a ...   0                  
+redhat.com   registry.access.redhat.com/rhceph/rhceph-3-dashboard-rhel7               Red Hat Ceph Storage 3 Dashboard          
+        0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnet-20-runtime-rhel7                .NET Core 2.0 runtime for RHEL            
+        0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnet-21-runtime-rhel7                .NET Core 2.1 runtime for RHEL            
+        0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnet-22-runtime-rhel7                .NET Core 2.2 runtime only on RHEL 7      
+        0                  
+redhat.com   registry.access.redhat.com/rhgs3/rhgs-volmanager-rhel7                   Management Service Instance responsible fo
+r ...   0                  
+redhat.com   registry.access.redhat.com/dotnet/dotnet-20-jenkins-slave-rhel7          .NET Core 2.0 Jenkins Slave for RHEL      
+        0                  
+redhat.com   registry.access.redhat.com/rhgs3/rhgs-server-rhel7                       containerized Red Hat Gluster Storage imag
+e ...   0                  
+redhat.com   registry.access.redhat.com/rhgs3/rhgs-s3-server-rhel7                    Containerized S3 server image for Red Hat 
+[student@workstation DO180-apps]$ sudo podman pull rhel
+Trying to pull registry.access.redhat.com/rhel...
+Getting image source signatures
+Copying blob 13f131153d86 done
+Copying blob 6e121ccea590 done
+Copying config 5a286023e7 done
+Writing manifest to image destination
+Storing signatures
+5a286023e73cb2cb0d2824b89cc6b8a8f6c2cb6044f37159d9b9f3f4eddda9cb
+[student@workstation DO180-apps]$ sudo podman images
+REPOSITORY                        TAG      IMAGE ID       CREATED       SIZE
+registry.access.redhat.com/rhel   latest   5a286023e73c   2 weeks ago   216 MB
+[student@workstation DO180-apps]$ sudo podman run ubi7/ubi:7.7 echo 'Hello!'
+Trying to pull registry.access.redhat.com/ubi7/ubi:7.7...
+Getting image source signatures
+Copying blob 09dbbf8834d2 done
+Copying blob fcd63ccfdd0c done
+Copying config 0355cd652b done
+Writing manifest to image destination
+Storing signatures
+Hello!
+[student@workstation DO180-apps]$ 
