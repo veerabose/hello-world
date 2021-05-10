@@ -617,5 +617,158 @@ Completing the Guided Exercise: Loading the Database
 
 -------------------------------CH-LAB-Managing Containers--------------------------------------------
 
+[student@workstation local]$ lab manage-review start
+
+Setting up workstation for the Lab: Managing Containers
+
+ · Checking podman configuration...............................  SUCCESS
+ · Check that /var/local/mysql does not exist..................  SUCCESS
+Exercise is already setup.
+[student@workstation local]$ sudo mkdir -pv /var/local/mysql
+mkdir: created directory '/var/local/mysql'
+[student@workstation local]$ sudo semanage fcontext -a -t container_file_t '/var/local/mysql(/.*)?'
+ValueError: File context for /var/local/mysql(/.*)? already defined
+[student@workstation local]$ sudo restorecon -R /var/local/mysql
+[student@workstation local]$ ls -lZd /var/local/mysql
+drwxr-xr-x. 2 root root unconfined_u:object_r:container_file_t:s0 6 May 10 04:05 /var/local/mysql
+[student@workstation local]$ sudo chown -Rv 27:27 /var/local/mysql
+changed ownership of '/var/local/mysql' from root:root to 27:27
+[student@workstation local]$ 
+[student@workstation local]$ sudo podman run --name mysql-1 -d -v /var/local/mysql:/var/lib/mysql/data -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 rhscl/mysql-57-rhel7
+6fcf213441056667b2c6f315f5cc219595cfa3b53b75cb2c4b51992ab55be30a
+[student@workstation local]$ sudo podman ps
+CONTAINER ID  IMAGE                                                   COMMAND     CREATED         STATUS             PORTS  NAMES
+6fcf21344105  registry.access.redhat.com/rhscl/mysql-57-rhel7:latest  run-mysqld  57 seconds ago  Up 56 seconds ago         mysql-1
+[student@workstation local]$ 
+[student@workstation local]$ sudo podman ps
+CONTAINER ID  IMAGE                                                   COMMAND     CREATED         STATUS             PORTS  NAMES
+6fcf21344105  registry.access.redhat.com/rhscl/mysql-57-rhel7:latest  run-mysqld  57 seconds ago  Up 56 seconds ago         mysql-1
+[student@workstation local]$ sudo podman ps --format="{{.ID}} {{.Names}}"
+6fcf21344105 mysql-1
+[student@workstation local]$ sudo podman inspect -f '{{ .NetworkSettings.IPAddress }}' mysql-1
+10.88.0.15
+[student@workstation local]$ mysql -uuser1 -h 10.88.0.15 -pmypa55 items < /home/student/DO180/labs/manage-review/db.sql
+[student@workstation local]$ mysql -uuser1 -h 10.88.0.15 -pmypa55 items -e "SELECT * FROM Item"
++----+-------------------+------+
+| id | description       | done |
++----+-------------------+------+
+|  1 | Pick up newspaper |    0 |
+|  2 | Buy groceries     |    1 |
++----+-------------------+------+
+[student@workstation local]$ sudo podman stop mysql-1
+6fcf213441056667b2c6f315f5cc219595cfa3b53b75cb2c4b51992ab55be30a
+[student@workstation local]$ 
+[student@workstation local]$ sudo podman run --name mysql-2 -d -v /var/local/mysql:/var/lib/mysql/data -p 13306:3306 -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 rhscl/mysql-57-rhel7
+fbade9e57f87199904ca1debe6918c72e469d4d302a84621ead386de1650ed21
+[student@workstation local]$ sudo podman ps --format="{{.ID}} {{.Names}}"
+fbade9e57f87 mysql-2
+[student@workstation local]$ sudo podman ps -a > /tmp/my-containers
+[student@workstation local]$ sudo podman exec -it mysql-2 /bin/bash
+bash-4.2$ mysql -uroot
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.7.24 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| items              |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use items;
+Database changed
+mysql> show tables;
++-----------------+
+| Tables_in_items |
++-----------------+
+| Item            |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM Item;
++----+-------------------+------+
+| id | description       | done |
++----+-------------------+------+
+|  1 | Pick up newspaper |    0 |
+|  2 | Buy groceries     |    1 |
++----+-------------------+------+
+2 rows in set (0.01 sec)
+
+mysql> exit
+Bye
+bash-4.2$ mysql -uuser1 -h workstation.lab.example.com \
+> ^C                      
+bash-4.2$ exit
+exit
+Error: non zero exit code: 130: OCI runtime error
+[student@workstation local]$ 
+[student@workstation local]$ mysql -uuser1 -h workstation.lab.example.com -pmypa55 -P13306 items
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.24 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MySQL [items]> insert into Item (description, done) values ('Finished lab', 1);
+Query OK, 1 row affected (0.005 sec)
+
+MySQL [items]> exit
+Bye
+[student@workstation local]$ sudo podman rm mysql-1
+6fcf213441056667b2c6f315f5cc219595cfa3b53b75cb2c4b51992ab55be30a
+[student@workstation local]$ lab manage-review grade
+
+Grading the student's work for the Lab: Managing Containers
+
+ · Checking if the /var/local/mysql folder exists..............  PASS
+ · Checking if owner was changed...............................  PASS
+ · Checking if the container mysql-1 was created...............  PASS
+ · Checking if the mysql-2 container is running................  PASS
+ · Checking tables for the 'Finished lab' row..................  PASS
+[student@workstation local]$ lab manage-review finish
+
+Completing the Lab: Managing Containers
+
+ · Removing the /var/local/mysql folder........................  SUCCESS
+ · Removing the fcontext for /var/local/mysql..................  SUCCESS
+ · Stopping mysql-1 container..................................  SUCCESS
+ · Removing mysql-1 container..................................  SUCCESS
+ · Stopping mysql-2 container..................................  SUCCESS
+ · Removing mysql-2 container..................................  SUCCESS
+ · Removing MySQL container image..............................  SUCCESS
+ · Removing temporary file.....................................  SUCCESS
+[student@workstation local]$ 
+
+Summary
+In this chapter, you learned:
+ Podman has subcommands to: create a new container (run), delete a container (rm), list
+ containers (ps), stop a container (stop), and start a process in a container (exec).
+  Default container storage is ephemeral, meaning its contents are not present after the container
+  restarts or is removed.
+   Containers can use a folder from the host file system to work with persistent data.
+    Podman mounts volumes in a container with the -v option in the podman run command.
+     The podman exec command starts an additional process inside a running container.
+      Podman maps local ports to container ports by using the -p option in the run subcommand.
+      
+---------------------------------------------------------------------------------------------------------
 
  
